@@ -1,0 +1,72 @@
+---
+/**
+ * Componente: Listado de Avisos
+ * Muestra el historial de avisos enviados por los padres
+ */
+
+export interface Notice {
+    id: string;
+    type: "ausencia" | "dieta";
+    date: string; // Formato fecha o rango
+    comment?: string;
+    status: "pendiente" | "visto" | "gestionado";
+    createdAt: Date;
+}
+
+interface Props {
+    notices: Notice[];
+}
+
+const { notices } = Astro.props;
+
+const formatDate = (date: Date) => {
+    return new Intl.DateTimeFormat("es-ES", {
+        day: "2-digit",
+        month: "short",
+    }).format(date);
+};
+---
+
+<div class="space-y-4">
+    {
+        notices.length === 0 ? (
+            <div class="text-center py-8 bg-gray-50 rounded-lg border border-gray-100">
+                <p class="text-gray-500">No hay avisos recientes</p>
+            </div>
+        ) : (
+            notices.map((notice) => (
+                <div class="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                    <div class="flex justify-between items-start mb-2">
+                        <div class="flex gap-2 items-center">
+                            <span
+                                class={`px-2 py-0.5 rounded text-xs font-medium ${
+                                    notice.type === "ausencia"
+                                        ? "bg-red-100 text-red-800"
+                                        : "bg-green-100 text-green-800"
+                                }`}
+                            >
+                                {notice.type === "ausencia"
+                                    ? "Ausencia"
+                                    : "Dieta"}
+                            </span>
+                            <span class="text-xs text-gray-400">
+                                {formatDate(notice.createdAt)}
+                            </span>
+                        </div>
+                        <span class="text-xs font-medium text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full border border-yellow-100">
+                            {notice.status}
+                        </span>
+                    </div>
+
+                    <p class="font-medium text-gray-900 mb-1">{notice.date}</p>
+
+                    {notice.comment && (
+                        <p class="text-sm text-gray-600 bg-gray-50 p-2 rounded mt-2 text-wrap break-words">
+                            "{notice.comment}"
+                        </p>
+                    )}
+                </div>
+            ))
+        )
+    }
+</div>

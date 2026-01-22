@@ -1,0 +1,60 @@
+---
+/**
+ * Componente de tarjeta de estado de comida
+ * Muestra visualmente cómo ha comido el niño
+ */
+interface Props {
+  estado: 'bien' | 'regular' | 'mal';
+  comentario?: string;
+}
+
+const { estado, comentario } = Astro.props;
+
+const estadoConfig = {
+  bien: {
+    label: '¡Ha comido muy bien!',
+    icon: '😊',
+    bgClass: 'bg-green-50 border-green-200',
+    textClass: 'text-green-800',
+    iconBg: 'bg-green-100',
+  },
+  regular: {
+    label: 'Ha comido regular',
+    icon: '😐',
+    bgClass: 'bg-amber-50 border-amber-200',
+    textClass: 'text-amber-800',
+    iconBg: 'bg-amber-100',
+  },
+  mal: {
+    label: 'Ha comido poco',
+    icon: '😟',
+    bgClass: 'bg-red-50 border-red-200',
+    textClass: 'text-red-800',
+    iconBg: 'bg-red-100',
+  },
+};
+
+const config = estadoConfig[estado];
+---
+
+<div class={`border-2 rounded-xl p-6 ${config.bgClass}`}>
+  <!-- Icono grande centrado -->
+  <div class="flex justify-center mb-4">
+    <div class={`w-20 h-20 rounded-full ${config.iconBg} flex items-center justify-center`}>
+      <span class="text-4xl">{config.icon}</span>
+    </div>
+  </div>
+
+  <!-- Estado -->
+  <h3 class={`text-2xl font-bold text-center mb-4 ${config.textClass}`}>
+    {config.label}
+  </h3>
+
+  <!-- Comentario del monitor -->
+  {comentario && (
+    <div class="mt-4 pt-4 border-t border-current border-opacity-20">
+      <p class="text-sm font-medium mb-2 opacity-75">Comentario del monitor:</p>
+      <p class={`text-base ${config.textClass}`}>"{comentario}"</p>
+    </div>
+  )}
+</div>

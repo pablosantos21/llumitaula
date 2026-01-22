@@ -1,0 +1,180 @@
+---
+/**
+ * Página: Menú semanal
+ * Muestra el menú de la semana completa
+ */
+import Layout from "../layouts/Layout.astro";
+import MenuDia from "../components/MenuDia.astro";
+
+// TODO: Obtener datos reales de Supabase
+// import { getMenuSemanal } from '../lib/supabase';
+
+// Función auxiliar para obtener el día de la semana
+function getDiaSemana(fecha: Date): number {
+  const dia = fecha.getDay();
+  return dia === 0 ? 6 : dia - 1; // Convertir domingo (0) a 6, y restar 1 al resto
+}
+
+// Obtener la fecha actual y el día de hoy
+const hoy = new Date();
+const diaHoyIndex = getDiaSemana(hoy);
+
+// Mock de datos del menú semanal
+const menuSemanalMock = [
+  {
+    dia: "Lunes",
+    fecha: "20 de enero",
+    primerPlato: "Crema de verduras con picatostes",
+    segundoPlato: "Pollo al horno con patatas",
+    postre: "Yogur natural",
+  },
+  {
+    dia: "Martes",
+    fecha: "21 de enero",
+    primerPlato: "Lentejas estofadas con verduras",
+    segundoPlato: "Merluza a la plancha con ensalada",
+    postre: "Fruta de temporada",
+  },
+  {
+    dia: "Miércoles",
+    fecha: "22 de enero",
+    primerPlato: "Pasta con tomate y albahaca",
+    segundoPlato: "Tortilla francesa con arroz",
+    postre: "Compota de manzana",
+  },
+  {
+    dia: "Jueves",
+    fecha: "23 de enero",
+    primerPlato: "Sopa de fideos con jamón",
+    segundoPlato: "Hamburguesa de ternera con guisantes",
+    postre: "Natillas caseras",
+  },
+  {
+    dia: "Viernes",
+    fecha: "24 de enero",
+    primerPlato: "Arroz a la cubana",
+    segundoPlato: "Croquetas caseras con ensalada",
+    postre: "Macedonia de frutas",
+  },
+];
+
+// TODO: Obtener datos reales
+// const menuSemanal = await getMenuSemanal();
+---
+
+<Layout title="Menú semanal" showNav={true} currentPath="/menu">
+  <div class="max-w-2xl mx-auto px-4 py-6">
+    <!-- Información de la semana -->
+    <div class="mb-6">
+      <p class="text-sm text-gray-600">
+        Semana del {menuSemanalMock[0].fecha} al {menuSemanalMock[4].fecha}
+      </p>
+    </div>
+
+    <!-- Carrusel de días -->
+    <div
+      id="menu-carousel"
+      class="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-6 pt-2 -mx-4 px-4 sm:mx-0 sm:px-0"
+    >
+      {
+        menuSemanalMock.map((menu, index) => (
+          <div
+            class="snap-center shrink-0 w-[85%] sm:w-[320px]"
+            data-hoy={String(index === diaHoyIndex)}
+          >
+            <MenuDia
+              dia={menu.dia}
+              fecha={menu.fecha}
+              primerPlato={menu.primerPlato}
+              segundoPlato={menu.segundoPlato}
+              postre={menu.postre}
+              esHoy={index === diaHoyIndex}
+            />
+          </div>
+        ))
+      }
+    </div>
+
+    <!-- Información nutricional -->
+    <div class="mt-8 bg-green-50 border border-green-100 rounded-lg p-4">
+      <div class="flex gap-3">
+        <svg
+          class="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <div class="text-sm text-green-900">
+          <p class="font-medium mb-1">Menú equilibrado</p>
+          <p class="text-green-800">
+            Todos nuestros menús están supervisados por nutricionistas y cumplen
+            con las recomendaciones de alimentación saludable infantil.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notas sobre alérgenos -->
+    <div class="mt-4 bg-amber-50 border border-amber-100 rounded-lg p-4">
+      <div class="flex gap-3">
+        <svg
+          class="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+          ></path>
+        </svg>
+        <div class="text-sm text-amber-900">
+          <p class="font-medium mb-1">Alérgenos e intolerancias</p>
+          <p class="text-amber-800">
+            Si tu hijo tiene alguna alergia o intolerancia alimentaria,
+            asegúrate de que está registrada en el centro. Preparamos menús
+            adaptados.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Espacio para la navegación inferior -->
+    <div class="h-4"></div>
+  </div>
+
+  <script>
+    // Ejecutar cuando el DOM esté listo
+    function initCarousel() {
+      const carousel = document.getElementById("menu-carousel");
+      // Buscar el elemento que tiene data-hoy="true"
+      const hoy = carousel?.querySelector('[data-hoy="true"]');
+
+      // 1. Scroll inicial al día de hoy
+      if (carousel && hoy && hoy instanceof HTMLElement) {
+        // Calcular la posición para centrar el elemento
+        const scrollLeft =
+          hoy.offsetLeft - (carousel.clientWidth - hoy.clientWidth) / 2;
+
+        // Scroll suave
+        carousel.scrollTo({
+          left: scrollLeft,
+          behavior: "smooth",
+        });
+      }
+    }
+
+    // Intentar ejecutar inmediatamente y después de cargar
+    document.addEventListener("DOMContentLoaded", initCarousel);
+    // Para soporte de transiciones de vista de Astro si se agregan en el futuro
+    document.addEventListener("astro:page-load", initCarousel);
+  </script>
+</Layout>

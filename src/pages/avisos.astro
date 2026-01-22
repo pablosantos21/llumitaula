@@ -1,0 +1,225 @@
+---
+/**
+ * Página: Avisos
+ * Gestión de notificaciones de padres al centro
+ */
+import Layout from "../layouts/Layout.astro";
+import NoticeList, { type Notice } from "../components/NoticeList.astro";
+import NoticeForm from "../components/NoticeForm.astro";
+
+// Mock de datos iniciales
+const noticesMock: Notice[] = [
+    {
+        id: "1",
+        type: "ausencia",
+        date: "2025-01-20",
+        comment: "Fiebre alta",
+        status: "visto",
+        createdAt: new Date("2025-01-19T10:00:00"),
+    },
+    {
+        id: "2",
+        type: "dieta",
+        date: "2025-01-25",
+        comment: "Dieta astringente por favor",
+        status: "pendiente",
+        createdAt: new Date("2025-01-21T09:30:00"),
+    },
+];
+---
+
+<Layout title="Avisos y Comunicaciones" showNav={true} currentPath="/avisos">
+    <div class="max-w-2xl mx-auto px-4 py-8">
+        <div class="mb-8">
+            <h1 class="text-2xl font-bold text-gray-900 mb-2">Avisos</h1>
+            <p class="text-gray-500">
+                Notifica ausencias o solicita cambios en el menú
+            </p>
+        </div>
+
+        <!-- Botones de Acción -->
+        <div class="grid grid-cols-2 gap-4 mb-8">
+            <button
+                id="btn-absence"
+                class="flex flex-col items-center justify-center p-4 bg-white border border-red-100 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95"
+            >
+                <div
+                    class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mb-3 text-2xl"
+                >
+                    🤒
+                </div>
+                <span class="font-medium text-red-900"
+                    >Notificar<br />Ausencia</span
+                >
+            </button>
+
+            <button
+                id="btn-diet"
+                class="flex flex-col items-center justify-center p-4 bg-white border border-green-100 rounded-xl shadow-sm hover:shadow-md transition-all active:scale-95"
+            >
+                <div
+                    class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mb-3 text-2xl"
+                >
+                    🥗
+                </div>
+                <span class="font-medium text-green-900"
+                    >Cambio de<br />Dieta</span
+                >
+            </button>
+        </div>
+
+        <!-- Lista de Histórico -->
+        <div>
+            <h2
+                class="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2"
+            >
+                Historial de avisos
+                <span
+                    class="text-xs font-normal text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full"
+                >
+                    {noticesMock.length}
+                </span>
+            </h2>
+            <NoticeList notices={noticesMock} />
+        </div>
+    </div>
+
+    <!-- Modales -->
+    <!-- Modal Ausencia -->
+    <div
+        id="modal-absence"
+        class="fixed inset-0 z-50 hidden"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div
+            class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            id="overlay-absence"
+        >
+        </div>
+        <div
+            class="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center pointer-events-none"
+        >
+            <div
+                class="bg-white rounded-t-2xl md:rounded-2xl w-full md:max-w-lg p-6 pb-safe pointer-events-auto transform transition-transform duration-300 translate-y-full md:translate-y-0"
+                id="panel-absence"
+            >
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">
+                        Notificar Ausencia
+                    </h3>
+                    <button
+                        class="text-gray-400 hover:text-gray-600 p-2 -mr-2 close-modal"
+                    >
+                        <svg
+                            class="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <NoticeForm type="ausencia" />
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Dieta -->
+    <div
+        id="modal-diet"
+        class="fixed inset-0 z-50 hidden"
+        role="dialog"
+        aria-modal="true"
+    >
+        <div
+            class="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            id="overlay-diet"
+        >
+        </div>
+        <div
+            class="absolute inset-x-0 bottom-0 md:inset-0 md:flex md:items-center md:justify-center pointer-events-none"
+        >
+            <div
+                class="bg-white rounded-t-2xl md:rounded-2xl w-full md:max-w-lg p-6 pb-safe pointer-events-auto transform transition-transform duration-300 translate-y-full md:translate-y-0"
+                id="panel-diet"
+            >
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-900">
+                        Cambio de Dieta
+                    </h3>
+                    <button
+                        class="text-gray-400 hover:text-gray-600 p-2 -mr-2 close-modal"
+                    >
+                        <svg
+                            class="w-6 h-6"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                <NoticeForm type="dieta" />
+            </div>
+        </div>
+    </div>
+</Layout>
+
+<style>
+    .pb-safe {
+        padding-bottom: env(safe-area-inset-bottom, 24px);
+    }
+
+    /* Animación de entrada para el panel */
+    .panel-enter {
+        transform: translateY(0) !important;
+    }
+</style>
+
+<script>
+    // Lógica simple para los modales
+    const setupModal = (btnId, modalId, panelId) => {
+        const btn = document.getElementById(btnId);
+        const modal = document.getElementById(modalId);
+        const panel = document.getElementById(panelId);
+        const overlay = modal?.querySelector(
+            `#${modalId.replace("modal", "overlay")}`,
+        );
+        const closeBtns = modal?.querySelectorAll(".close-modal");
+
+        const open = () => {
+            modal?.classList.remove("hidden");
+            // Pequeño timeout para permitir que se quite el display: none antes de animar
+            setTimeout(() => {
+                panel?.classList.add("panel-enter");
+            }, 10);
+            document.body.style.overflow = "hidden";
+        };
+
+        const close = () => {
+            panel?.classList.remove("panel-enter");
+            setTimeout(() => {
+                modal?.classList.add("hidden");
+            }, 300); // Duración de la transición
+            document.body.style.overflow = "";
+        };
+
+        btn?.addEventListener("click", open);
+        overlay?.addEventListener("click", close);
+        closeBtns?.forEach((b) => b.addEventListener("click", close));
+    };
+
+    setupModal("btn-absence", "modal-absence", "panel-absence");
+    setupModal("btn-diet", "modal-diet", "panel-diet");
+</script>

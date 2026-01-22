@@ -1,23 +1,48 @@
+---
+/**
+ * Layout principal de la aplicación
+ * Mobile-first, optimizado para padres
+ */
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Navigation from '../components/Navigation.astro';
+
+interface Props {
+  title: string;
+  showNav?: boolean;
+  currentPath?: string;
+}
+
+const { title, showNav = false, currentPath = '' } = Astro.props;
+---
+
 <!doctype html>
-<html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro Basics</title>
-	</head>
-	<body>
-		<slot />
-	</body>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content="Accede a la información del comedor escolar de tu hijo" />
+    <meta name="theme-color" content="#ffffff" />
+    <title>{title} - Llumitaula</title>
+  </head>
+  <body class="antialiased">
+    {showNav && <Header title={title} />}
+    
+    <main class={showNav ? 'pb-20 min-h-screen' : 'min-h-screen'}>
+      <slot />
+    </main>
+
+    {showNav && <Navigation currentPath={currentPath} />}
+  </body>
 </html>
 
 <style>
-	html,
-	body {
-		margin: 0;
-		width: 100%;
-		height: 100%;
-	}
+  html,
+  body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+  }
 </style>
